@@ -1,11 +1,13 @@
 import string
-from random import choice, uniform
+from random import choice, randint, random, uniform
 
 class WeaselProgram:
 
-    def __init__(self, target="HelloWorld", population_size=25):
+    def __init__(self, target="HelloWorld", population_size=25, mutation_ratio=0.1):
         self.target          = target
         self.population_size = population_size
+        self.mutation_ratio  = mutation_ratio
+
         self.pool            = list(string.ascii_letters)
         self.population      = self.produce_population()
 
@@ -15,6 +17,9 @@ class WeaselProgram:
             genome.append(choice(self.pool))
         return ''.join(genome)
 
+    def procreate_genome(self):
+        child_genome = self.cross_over()
+        return self.mutate(child_genome)
     def produce_population(self):
         return [self.produce_genome() for i in range(self.population_size)]
 
@@ -23,7 +28,7 @@ class WeaselProgram:
         new_population = []
         threshold_value = ( self.population_size // 5 ) * 6 # 5/6 of the previous population will be renewed
         for i in range(threshold_value):
-            new_population.append(self.cross_over())
+            new_population.append(self.procreate_genome())
         for i in range(threshold_value, self.population_size):
             new_population.append(self.produce_genome)
         self.population = new_population
@@ -48,6 +53,13 @@ class WeaselProgram:
             else:
                 child_genome.append(mother_genome[i])
         return ''.join(child_genome)
+
+    def mutate(self, genome):
+        position = randint(0, len(genome) - 1)
+        g = list(genome)
+        if random() < self.mutation_ratio:
+            g[position] = choice(self.pool)
+        return ''.join(g)
 
     def select_parent(self):
         max     = sum([self.get_fitness(c) for c in self.population])

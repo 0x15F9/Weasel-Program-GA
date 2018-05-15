@@ -10,7 +10,7 @@ def get_highest_fitness_per_population(list_dict):
     return max_fitness 
 
 def main():
-    wp = WeaselProgram(population_size=500)
+    wp = WeaselProgram(population_size=100)
     max = get_highest_fitness_per_population(wp.intermediary_result())
     while max != 1:
         wp.regenerate_population(wp.population)
